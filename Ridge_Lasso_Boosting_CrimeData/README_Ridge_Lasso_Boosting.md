@@ -56,7 +56,7 @@ This project explores various regression techniques—including linear regressio
 
 ---
 
-## 📈 Results Summary
+## 📈 Model Summary
 
 | Model                  | Regularization / Tuning        | Notes |
 |-----------------------|-------------------------------|-------|
