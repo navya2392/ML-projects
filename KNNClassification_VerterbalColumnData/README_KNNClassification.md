@@ -92,7 +92,7 @@ Weighted KNN replaces majority voting with weights ∝ 1/distance:
 ```
 KNNClassification.ipynb               # Main notebook
 README.md                             # Project summary (this file)
-vertebral_column_data.csv             # Raw data
+column_2C.dat                         # Raw data
 ```
 
 ---
