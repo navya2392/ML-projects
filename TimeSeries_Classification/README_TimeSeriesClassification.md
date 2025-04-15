@@ -1,8 +1,8 @@
 # 📊 Time Series Classification using Logistic Regression and Feature Engineering
 
-This project focuses on classifying human activity based on time series sensor data from the [AReM dataset](https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+system+based+on+Multisensor+data+fusion+%28AReM%29). The task was part of Homework 4 in DSCI 552 (Machine Learning for Data Science) at USC.
+This project focuses on classifying human activity based on time series sensor data from the [AReM dataset](https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+system+based+on+Multisensor+data+fusion+%28AReM%29). 
 
-We use both **binary** and **multi-class** classification techniques with **extensive feature extraction**, including:
+I used both **binary** and **multi-class** classification techniques with **extensive feature extraction**, including:
 - Time-domain statistics
 - Feature selection via p-values and L1-regularization
 - Recursive Feature Elimination (RFE)
@@ -74,5 +74,5 @@ Features are also extracted after splitting each time series into `l` segments (
 ```
 TimeSeriesClassification.ipynb        # Main notebook with all experiments
 README.md                             # Project summary (this file)
-data/                                 # Preprocessed time series data
+data/AReM                             # time series data
 ```
