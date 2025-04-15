@@ -1,6 +1,6 @@
 # 🏙️ Crime Rate Prediction using Regression, LASSO, and Boosting Models
 
-This project explores various regression techniques—including linear regression, ridge regression, LASSO, principal component regression (PCR), and gradient boosting—for predicting violent crime rates using the **Communities and Crime** dataset. It is part of Homework 5 for the DSCI 552 (Machine Learning for Data Science) course at USC.
+This project explores various regression techniques—including linear regression, ridge regression, LASSO, principal component regression (PCR), and gradient boosting—for predicting violent crime rates using the **Communities and Crime** dataset. 
 
 ---
 
