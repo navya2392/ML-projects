@@ -1,6 +1,6 @@
 # ⚙️ Imbalanced Classification with Random Forest, XGBoost, and SMOTE
 
-This project addresses classification of rare failures in trucks using advanced tree-based methods including Random Forest, XGBoost with L1-penalized logistic regression, and SMOTE oversampling. It is based on the APS Failure dataset and was developed for Homework 6 of the DSCI 552 (Machine Learning for Data Science) course at USC.
+This project addresses classification of rare failures in trucks using advanced tree-based methods including Random Forest, XGBoost with L1-penalized logistic regression, and SMOTE oversampling. It is based on the APS Failure dataset.
 
 ---
 
@@ -56,18 +56,6 @@ This project addresses classification of rare failures in trucks using advanced 
 - Compared performance with uncompensated version
 - Ensured correct handling of CV (no data leakage from SMOTE)
 
----
-
-## 📈 Results Summary
-
-| Model                  | Class Compensation | CV Method | AUC (Test) | Comments |
-|-----------------------|--------------------|-----------|------------|----------|
-| Random Forest         | ❌ No              | —         | —          | Baseline |
-| Random Forest         | ✅ Class Weights   | —         | —          | Improved balance |
-| XGBoost               | ❌ No              | 5-Fold    | —          | Baseline boosting |
-| XGBoost + SMOTE       | ✅ SMOTE           | 5-Fold    | —          | Best performance |
-
-*(See notebook for actual numeric metrics.)*
 
 ---
 
@@ -87,7 +75,8 @@ This project addresses classification of rare failures in trucks using advanced 
 ```
 RandomForest_XGBoost_SMOTE.ipynb      # Full notebook with preprocessing, modeling, and evaluation
 README.md                             # Project summary (this file)
-aps_failure_training_set.csv          # APS training data (if included)
+aps_failure_training_set.csv          # APS training data
+aps_failture_test_set.csv             # APS test data
 ```
 
 ---
