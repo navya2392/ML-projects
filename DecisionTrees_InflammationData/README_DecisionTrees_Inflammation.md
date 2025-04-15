@@ -1,6 +1,6 @@
 # 🌡️ Acute Inflammations Classification using Decision Trees
 
-This project applies decision tree classifiers to the **Acute Inflammations** dataset to demonstrate interpretable modeling using rule-based systems. It is part of Homework 5 for the DSCI 552 course (Machine Learning for Data Science) at USC.
+This project applies decision tree classifiers to the **Acute Inflammations** dataset to demonstrate interpretable modeling using rule-based systems. 
 
 ---
 
@@ -55,6 +55,7 @@ This project applies decision tree classifiers to the **Acute Inflammations** da
 ```
 DecisionTrees_Inflammation.ipynb      # Notebook with decision tree models and visualizations
 README.md                             # Summary of the Decision Tree component (this file)
+diagnosis.data                        # Raw data file
 ```
 
 ---
