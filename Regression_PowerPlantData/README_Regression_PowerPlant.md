@@ -89,7 +89,7 @@ Data represents operational measurements taken from a Combined Cycle Power Plant
 ```
 Regression_PowerPlant.ipynb           # Main notebook with analysis
 README.md                             # Project summary (this file)
-power_plant_data.csv                  # Raw data file (if included)
+Folds5x2_pp.xlsx                      # Raw data file 
 ```
 
 ---
