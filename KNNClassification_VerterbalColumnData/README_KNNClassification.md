@@ -1,6 +1,8 @@
 # 🔍 KNN Classification on Vertebral Column Data
 
-This project involves applying and analyzing the performance of **K-Nearest Neighbors (KNN)** on the Vertebral Column Data Set from the UCI Machine Learning Repository. It was developed as part of Homework 1 for the DSCI 552 (Machine Learning for Data Science) course at USC.
+This project involves applying and analyzing the performance of **K-Nearest Neighbors (KNN)** on the Vertebral Column Data Set from the UCI Machine Learning Repository. 
+Source: https://archive.ics.uci.edu/ml/datasets/Vertebral+Column
+
 
 ---
 
@@ -90,7 +92,7 @@ Weighted KNN replaces majority voting with weights ∝ 1/distance:
 ```
 KNNClassification.ipynb               # Main notebook
 README.md                             # Project summary (this file)
-vertebral_column_data.csv             # Raw data (if included)
+vertebral_column_data.csv             # Raw data
 ```
 
 ---
