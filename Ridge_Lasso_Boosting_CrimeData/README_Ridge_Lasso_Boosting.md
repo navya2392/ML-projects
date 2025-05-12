@@ -1,6 +1,6 @@
 # 🏙️ Crime Rate Prediction using Regression, LASSO, and Boosting Models
 
-This project explores various regression techniques—including linear regression, ridge regression, LASSO, principal component regression (PCR), and gradient boosting—for predicting violent crime rates using the **Communities and Crime** dataset. It is part of Homework 5 for the DSCI 552 (Machine Learning for Data Science) course at USC.
+This project explores various regression techniques—including linear regression, ridge regression, LASSO, principal component regression (PCR), and gradient boosting—for predicting violent crime rates using the **Communities and Crime** dataset. 
 
 ---
 
@@ -56,15 +56,15 @@ This project explores various regression techniques—including linear regressio
 
 ---
 
-## 📈 Results Summary
+## 📈 Model Summary
 
-| Model                  | Regularization / Tuning       | Test MSE | Notes |
-|-----------------------|-------------------------------|----------|-------|
-| Linear Regression     | None                          |   —      | Baseline |
-| Ridge Regression      | λ via CV                      |   —      | Regularized |
-| LASSO                 | λ via CV                      |   —      | Sparse model |
-| PCR                   | M via CV                      |   —      | Reduced dimensionality |
-| XGBoost (Boosting)    | α via CV                      |   —      | Nonlinear model |
+| Model                  | Regularization / Tuning        | Notes |
+|-----------------------|-------------------------------|-------|
+| Linear Regression     | None                          | Baseline |
+| Ridge Regression      | λ via CV                      | Regularized |
+| LASSO                 | λ via CV                      | Sparse model |
+| PCR                   | M via CV                      | Reduced dimensionality |
+| XGBoost (Boosting)    | α via CV                      | Nonlinear model |
 
 *(Please refer to notebook for exact numerical results)*
 
@@ -85,7 +85,7 @@ This project explores various regression techniques—including linear regressio
 ```
 Ridge_Lasso_Boosting.ipynb            # Main notebook with all regression models and boosting
 README.md                             # Summary of the project (this file)
-communities_crime.csv                 # Cleaned and preprocessed dataset (if included)
+communities.csv                 # Cleaned and preprocessed dataset (if included)
 ```
 
 ---

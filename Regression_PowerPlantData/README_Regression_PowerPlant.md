@@ -1,6 +1,6 @@
 # ⚡ Power Plant Energy Output Prediction using Regression Models
 
-This project explores the use of both **linear regression** and **K-nearest neighbors (KNN) regression** to predict the net hourly electrical energy output of a Combined Cycle Power Plant. The dataset is sourced from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant), and this analysis was developed for Homework 2 of USC’s DSCI 552 (Machine Learning for Data Science) course.
+This project explores the use of both **linear regression** and **K-nearest neighbors (KNN) regression** to predict the net hourly electrical energy output of a Combined Cycle Power Plant. The dataset is sourced from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Combined+Cycle+Power+Plant).
 
 ---
 
@@ -89,7 +89,7 @@ Data represents operational measurements taken from a Combined Cycle Power Plant
 ```
 Regression_PowerPlant.ipynb           # Main notebook with analysis
 README.md                             # Project summary (this file)
-power_plant_data.csv                  # Raw data file (if included)
+Folds5x2_pp.xlsx                      # Raw data file 
 ```
 
 ---
