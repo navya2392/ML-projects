@@ -15,14 +15,6 @@ The notebook walks through:
 
 ---
 
-## 📁 Folder Contents
-- **DeepLearning_ImageClassification.ipynb** — Main notebook (data processing, model training, evaluation).  
-- **Final Project.pdf** — Project report summarizing methodology and results.  
-- **DeepLearning_ImageClassification_Outputs.txt** — Key output metrics extracted from the notebook.  
-- **README.md** — This documentation file.
-
----
-
 ## ⚙️ Methodology
 
 ### **1. Dataset**
