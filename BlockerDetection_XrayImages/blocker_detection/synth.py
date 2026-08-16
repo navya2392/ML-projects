@@ -29,10 +29,28 @@ class Blocker:
 
 
 @dataclass
+class Site:
+    """An *expected* blocker location, as the recipe/CAD says it should be.
+
+    ``present`` is the ground truth of whether a blocker was actually rendered
+    there. Ablated sites (present=False) are the negative controls: without
+    them the "bad" set cannot distinguish a good verifier from one that always
+    answers "found it".
+    """
+
+    cx: float
+    cy: float
+    r: float
+    present: bool = True
+    visible_fraction: float = 1.0
+
+
+@dataclass
 class Frame:
     image: np.ndarray  # float32 in [0, 1]
     blockers: list[Blocker] = field(default_factory=list)
-    die_polygon: np.ndarray | None = None
+    expected: list[Site] = field(default_factory=list)
+    beam_polygon: np.ndarray | None = None
     blur_sigma: float = 0.0
     nominal_radius: float = 0.0
 
@@ -133,6 +151,11 @@ def make_frame(
     blocker_gray: float = 0.03,
     rim_gain: float = 0.16,
     ring_artifacts: int = 6,
+    ablate: int = 0,
+    site_jitter: float = 0.0,
+    recipe_shift: float = 0.0,
+    recipe_rot_deg: float = 0.0,
+    recipe_scale: float = 1.0,
     seed: int = 0,
 ) -> Frame:
     rng = np.random.default_rng(seed)
@@ -168,9 +191,38 @@ def make_frame(
     blockers = _place_blockers(
         rng, die, n_interior, nominal_radius, radius_jitter, n_pairs, n_edge
     )
-    for b in blockers:
-        m = _disk_field(shape, b.cx, b.cy, b.r) & die
-        img[m] = blocker_gray
+
+    # Negative controls: ablate a few sites. They stay in the expected list but
+    # are never rendered, so a verifier that always answers "present" scores 100%
+    # recall and is immediately exposed by its alert precision.
+    order = rng.permutation(len(blockers))
+    ablated = set(order[:ablate].tolist())
+    sites: list[Site] = []
+    for i, b in enumerate(blockers):
+        present = i not in ablated
+        if present:
+            m = _disk_field(shape, b.cx, b.cy, b.r) & die
+            img[m] = blocker_gray
+        # The recipe coordinate is nominal; the real part sits a little off it.
+        # Physically this is a *global* misregistration (the part is shifted,
+        # rotated and scaled in the frame) plus a small per-site placement
+        # tolerance -- not independent noise per site. Modelling it correctly
+        # matters, because a global error is recoverable by registration and
+        # independent noise is not.
+        jx, jy = (rng.standard_normal(2) * site_jitter) if site_jitter else (0.0, 0.0)
+        sites.append(Site(b.cx + jx, b.cy + jy, b.r, present, b.visible_fraction))
+    blockers = [b for i, b in enumerate(blockers) if i not in ablated]
+
+    if recipe_shift or recipe_rot_deg or recipe_scale != 1.0:
+        th = np.deg2rad(recipe_rot_deg)
+        R = recipe_scale * np.array(
+            [[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]], float
+        )
+        ctr = np.array([size / 2.0, size / 2.0])
+        off = rng.standard_normal(2) * recipe_shift
+        for st in sites:
+            v = R @ (np.array([st.cx, st.cy]) - ctr) + ctr + off
+            st.cx, st.cy = float(v[0]), float(v[1])
 
     # faint concentric ring artifacts -- classic Hough false positives
     yy, xx = np.mgrid[0:size, 0:size].astype(np.float32)
@@ -189,6 +241,7 @@ def make_frame(
     return Frame(
         image=img,
         blockers=blockers,
+        expected=sites,
         blur_sigma=blur_sigma,
         nominal_radius=nominal_radius,
     )
@@ -200,4 +253,37 @@ PRESETS = {
     "Q15B_sharp": dict(blur_sigma=3.0, nominal_radius=21.0, n_interior=15, seed=15),
     "Q31B_blurry": dict(blur_sigma=9.0, nominal_radius=33.0, n_interior=17, seed=31),
     "Q14B_medium": dict(blur_sigma=5.0, nominal_radius=25.0, n_interior=18, seed=14),
+}
+
+#: Verification-mode presets. Heavy on beam-edge blockers, because that is the
+#: population the customer's existing algorithm fails on, and each carries
+#: ablated negative controls.
+VERIFY_PRESETS = {
+    f"{name}_edge{k}": dict(
+        base, n_edge=9, n_interior=max(8, base["n_interior"] - 4),
+        ablate=2,
+        site_jitter=0.08 * base["nominal_radius"],  # placement tolerance
+        recipe_shift=0.9 * base["nominal_radius"],  # global misregistration
+        recipe_rot_deg=0.5,
+        recipe_scale=1.004,
+        seed=base["seed"] + 100 * k,
+    )
+    for k in range(4)
+    for name, base in PRESETS.items()
+}
+
+#: Deliberately abusive registration error, to confirm the consensus check
+#: degrades to REVIEW rather than to a false alarm.
+STRESS_PRESETS = {
+    f"{name}_stress{k}": dict(
+        base, n_edge=9, n_interior=max(8, base["n_interior"] - 4),
+        ablate=2,
+        site_jitter=0.20 * base["nominal_radius"],
+        recipe_shift=2.2 * base["nominal_radius"],
+        recipe_rot_deg=1.6,
+        recipe_scale=1.012,
+        seed=base["seed"] + 900 * (k + 1),
+    )
+    for k in range(2)
+    for name, base in PRESETS.items()
 }
