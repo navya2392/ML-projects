@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+data/
+blind_out/
+real_out/
+demo_out/
+*.csv

@@ -179,6 +179,51 @@ edge-truncated (centres on and beyond the beam boundary).*
 
 ---
 
+## 5b. Real data (23 frames: 11 bad, 11 good, 1 special, 1 raw TIFF)
+
+The blind workflow now runs end to end on the real frames:
+
+```
+python run_blind.py data/data --out blind_out --csv blind_detections.csv
+```
+
+It finds 17-30 blockers per frame at ~5 s/frame, with occupancy near 1.0 on
+accepted detections. **Everything that worked on synthetic data failed on the
+real frames**, and the fixes are the substance of this section.
+
+| Broke on real data | Why | Fix |
+|---|---|---|
+| Otsu-inside-beam radius bootstrap | The beam has a strong internal gradient (0.30 centre, 0.75 rim), so Otsu split *the beam* rather than blockers from beam: threshold 0.470 against beam median 0.392, 46% of the frame called "holes", 4.8 px radius for 28 px blockers | Scale-space calibration on the occupancy field (`scale.py`) |
+| Matched-filter SNR for scale selection | Rose monotonically; pinned 20 of 23 frames to the search cap | **Occupancy crossing**: alpha stays ~1 while the template fits inside the core and falls once it exceeds it. Validated against radial profiling -- blockers measure 32-34 px, the crossing returns 31.9 |
+| Two-class Otsu beam segmentation | The frame is trimodal (exterior / beam / bright rim); beam area ranged 0.22-0.74 | Three-class Otsu; beam area now 0.67-0.75 |
+| Fixed oversized reference closing | Structure larger than a blocker survived, so big templates fed on it | Reference rebuilt at each scale -- a genuine band-pass |
+| Global percentile for occupancy | One merged cluster set the radius for the whole frame (40-60 px outliers) | Median over several separated peaks; radius now 20-36.6 px, CV 0.16 |
+| Morphological closing for the footprint | Cannot restore a **corner** bite: cutting a convex corner is indistinguishable from more rounding, so corner blockers never became candidates at all | Geometric footprint from the min-area rectangle with rounding read off intact corners |
+| Reference closing at 1.9r | A touching pair spans ~2.5r, so the closing absorbed part of the pair into its own background and depressed occupancy exactly for merged pairs | Closing at 2.6r |
+| Merged-pair splitting | Split a genuine single blocker into two half-strength discs, destroying a clean 0.94 detection | Require *every* member of a split cluster to stay opaque, not just the new one |
+
+Merged pairs are now resolved on real data (verified on several dumbbells), and
+the split threshold is insensitive across F = 80-400.
+
+### What is still unsolved
+
+**Deep edge bites.** One confirmed case (`bad/ISP_NF_N260530-001-002_Q16T`, top
+edge) is a blocker eating ~60 px into the beam whose centre lies outside it.
+Its occupancy is measured correctly (alpha 0.99) but it is rejected because only
+10% of the disc lands inside the reconstructed footprint. A dedicated
+silhouette-bite channel was written for exactly this and is **shipped disabled**
+(`BlindParams.use_bites=False`): the real boundary is blurred enough that a
+60 px visual bite moves the thresholded silhouette by only 7 px, so the channel
+missed every confirmed bite while adding spurious detections along one frame
+with an irregular top edge. That is the wrong trade for a system whose failure
+mode is false alarms. It needs a sub-pixel boundary estimate, not an Otsu
+outline.
+
+**Recall is unmeasured.** There are no expected coordinates in the archive, so
+none of the counts above can be scored. See §7.
+
+---
+
 ## 6. Honest limits
 
 - **100% recall *and* 100% precision simultaneously is not achievable** for a
@@ -198,11 +243,13 @@ edge-truncated (centres on and beyond the beam boundary).*
 
 ## 7. What I need from you
 
-1. **The expected blocker coordinates** — yes, please send them. State the frame:
-   recipe/CAD units or pixels, and the origin. This is the single highest-value
-   input.
-2. **The good/bad image folders** — they did not arrive on disk in this session.
-3. **Which specific site failed** in each bad image, if you have it.
+1. **The expected blocker coordinates** — still the single highest-value input,
+   and now the only thing blocking a real accuracy number. State the frame:
+   recipe/CAD units or pixels, and the origin. Without them every count in §5b
+   is unscored: I cannot tell a miss from a blocker that was never there.
+2. ~~The good/bad image folders~~ — received, 23 frames.
+3. **Which specific site failed** in each bad image. With 11 bad frames and no
+   labels, I can only confirm the failures I happen to spot by eye.
 4. **Negative controls**: any real cases where a blocker was genuinely absent. If
    none exist, they can be synthesised by inpainting a blocker out of a good
    image, and that is worth doing before trusting any precision number.
